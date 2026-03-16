@@ -10,10 +10,21 @@ const v1Router = require('./api/v1');
 
 const app = express();
 
+// ─── CORS Origins ──────────────────────────────────────────────
+// FRONTEND_URL bisa berisi satu URL atau beberapa dipisah koma
+const allowedOrigins = FRONTEND_URL
+  ? FRONTEND_URL.split(',').map((u) => u.trim())
+  : ['http://localhost:5173'];
+
 // ─── Security Middleware ───────────────────────────────────────
 app.use(helmet());
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: (origin, callback) => {
+    // Izinkan request tanpa origin (mis. Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: Origin ${origin} tidak diizinkan`));
+  },
   credentials: true,
 }));
 
