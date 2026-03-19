@@ -40,4 +40,11 @@ const oauthCallback = asyncHandler(async (req, res) => {
   res.json(ApiResponse.success(data, data.isNewUser ? 'Profil Google berhasil dibuat' : 'Login Google berhasil'));
 });
 
-module.exports = { register, login, logout, refresh, checkUsername, oauthCallback };
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const result = await AuthService.forgotPassword(email);
+  res.json(ApiResponse.success(result, result.message));
+});
+
+module.exports = { register, login, logout, refresh, checkUsername, oauthCallback, forgotPassword };
+

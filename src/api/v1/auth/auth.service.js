@@ -172,6 +172,25 @@ const oauthCallback = async ({ user }) => {
   return { user: newProfile, isNewUser: true };
 };
 
+/**
+ * Reset password — kirim email reset link ke user.
+ */
+const forgotPassword = async (email) => {
+  if (!email) throw ApiError.badRequest('Email wajib diisi');
+
+  const redirectTo = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password`;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
+
+  // Supabase tidak membedakan email terdaftar/tidak (untuk keamanan)
+  // Kita tetap return sukses agar tidak mengekspos data user
+  if (error) throw ApiError.internal(error.message);
+
+  return { message: 'Email reset password telah dikirim jika akun terdaftar.' };
+};
+
 module.exports = {
   register,
   login,
@@ -179,4 +198,5 @@ module.exports = {
   refresh,
   checkUsernameAvailability,
   oauthCallback,
+  forgotPassword,
 };

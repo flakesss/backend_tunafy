@@ -20,4 +20,8 @@ router.get('/check-username', AuthController.checkUsername);
 // POST /api/v1/auth/oauth/callback — sinkronisasi profil user Google ke DB
 router.post('/oauth/callback', AuthController.oauthCallback);
 
+// POST /api/v1/auth/forgot-password — kirim email reset password
+router.post('/forgot-password', AuthController.forgotPassword);
+
 module.exports = router;
+
